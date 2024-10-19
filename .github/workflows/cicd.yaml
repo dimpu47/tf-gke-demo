@@ -19,6 +19,9 @@ jobs:
     steps:
     - name: 'Checkout code'
       uses: actions/checkout@v3
+    
+    - name: 'Create service account key file'
+      run: echo "${{ secrets.GCP_SA_KEY }}" > key.json
 
     - name: 'Set up Google Cloud SDK'
       uses: google-github-actions/setup-gcloud@v1
@@ -38,13 +41,10 @@ jobs:
     - name: 'TOFU Init with Partial Backend Configuration'
       run: |
         echo "Initializing TOFU..."
-        tofu init -backend-config="bucket=$bucket" \
-                  -backend-config="credentials=$service_account_key" \
-                  -backend-config="prefix=tofu/state/$env.tfvars"
-      with:
-        env: ${{ env.TOFU_ENV }}
-        bucket: ${{ secrets.GCS_BUCKET_NAME }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        tofu init -backend-config="bucket=${{ secrets.GCS_BUCKET_NAME }}" \
+                  -backend-config="credentials=key.json" \
+                  -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}"
+
     - name: 'TOFU Plan'
       run: |
         echo "Running TOFU plan for environment: ${{ env.TOFU_ENV }}"
@@ -55,3 +55,6 @@ jobs:
       run: |
         echo "Applying TOFU changes for environment: ${{ env.TOFU_ENV }}"
         # tofu apply tfplan
+
+    - name: 'Cleanup'
+      run: rm -f key.json
