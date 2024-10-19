@@ -63,7 +63,9 @@ jobs:
         tofu plan -var-file="${{ env.TOFU_ENV }}.tfvars" -out=tfplan
 
     - name: 'TOFU Apply'
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: key.json
+      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop && github.event_name != 'pull_request''
       run: |
         echo "Applying TOFU changes for environment: ${{ env.TOFU_ENV }}"
-        # tofu apply tfplan
+        tofu apply tfplan
