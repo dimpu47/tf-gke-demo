@@ -29,10 +29,7 @@ jobs:
 
     - name: 'Download and Install TOFU'
       run: |
-        echo "Downloading TOFU..."
-        curl -Lo tofu https://example.com/path-to-tofu-binary/tofu-linux-amd64
-        chmod +x tofu
-        sudo mv tofu /usr/local/bin/tofu
+        snap install --classic opentofu
 
     - name: 'TOFU Format Check'
       run: |
