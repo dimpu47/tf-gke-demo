@@ -54,6 +54,7 @@ jobs:
         tofu init -backend-config="bucket=gauro-${{ env.TOFU_ENV }}-tfstate" \
                   -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}" \
                   -backend-config="credentials=key.json" 
+        tofu plan -var-file="${{ env.TOFU_ENV }}.tfvars" -out=tfplan
 
     - name: 'TOFU Plan'
       run: |
