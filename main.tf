@@ -11,6 +11,6 @@ module "vpc" {
 }
 
 output "snet_sec" {
-  value = module.vpc.subnets_secondary_ranges
+  value     = module.vpc.subnets_secondary_ranges
   sensitive = true
 }

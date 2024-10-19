@@ -95,8 +95,8 @@ variable "disk_size_gb" {
 }
 
 variable "argo_ha" {
-  type = bool
-  default = false
+  type        = bool
+  default     = false
   description = "whether to deploy argo in ha mode or not"
 }
 

@@ -27,16 +27,14 @@ jobs:
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         export_default_credentials: true
 
-    - name: 'Download and Install TOFU'
-      run: |
-        snap install --classic opentofu
-
     - name: 'TOFU Format Check'
+      uses: opentofu/setup-opentofu@v1
       run: |
         echo "Running TOFU fmt..."
         tofu fmt -check
 
     - name: 'TOFU Init with Partial Backend Configuration'
+      uses: opentofu/setup-opentofu@v1
       run: |
         echo "Initializing TOFU..."
         tofu init -backend-config="bucket=${{ secrets.GCS_BUCKET_NAME }}" \
@@ -44,11 +42,13 @@ jobs:
                   -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}"
 
     - name: 'TOFU Plan'
+      uses: opentofu/setup-opentofu@v1
       run: |
         echo "Running TOFU plan for environment: ${{ env.TOFU_ENV }}"
         tofu plan -var-file="${{ env.TOFU_ENV }}.tfvars" -out=tfplan
 
     - name: 'TOFU Apply'
+      uses: opentofu/setup-opentofu@v1
       if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop'
       run: |
         echo "Applying TOFU changes for environment: ${{ env.TOFU_ENV }}"

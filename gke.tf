@@ -140,7 +140,7 @@ resource "null_resource" "deploy_argo" {
     environment = {
       cluster_name   = "${var.gke_cluster_name}-${terraform.workspace}"
       cluster_region = "${var.region}"
-      ha = "${var.argo_ha}"
+      ha             = "${var.argo_ha}"
     }
   }
 
