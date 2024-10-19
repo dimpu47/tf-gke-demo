@@ -15,6 +15,7 @@ jobs:
 
     env:
       TOFU_ENV: ${{ github.ref_name == 'main' && 'prod' || github.ref_name == 'develop' && 'stage' || 'sandbox' }}
+      GOOGLE_APPLICATION_CREDENTIALS: /tmp/key.json
     
     steps:
     - name: 'Checkout code'
@@ -26,6 +27,17 @@ jobs:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
         service_account_key: ${{ secrets.GCP_SA_KEY }}
         export_default_credentials: true
+    
+    - name: 'Create service account key file'
+      run: |
+        echo "${{ secrets.GCP_SA_KEY }}" > $GOOGLE_APPLICATION_CREDENTIALS
+
+        # Debug: Check if the JSON is valid
+        if ! jq empty $GOOGLE_APPLICATION_CREDENTIALS; then
+          echo "Invalid JSON in key.json"
+          exit 1
+        fi
+
 
     - name: 'Set up OpenTofu'
       uses: opentofu/setup-opentofu@v1
@@ -38,11 +50,10 @@ jobs:
     - name: 'TOFU Init with Partial Backend Configuration'
       run: |
         echo "Initializing TOFU..."
-        echo "${{ secrets.GCP_SA_KEY }}" > key.json
+        env
         tofu init -backend-config="bucket=${{ secrets.GCS_BUCKET_NAME }}" \
-                  -backend-config="credentials=key.json" \
-                  -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}"
-        rm -f key.json
+                  -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}" \
+                  -backend-config="credentials=${{ env.GOOGLE_APPLICATION_CREDENTIALS }}"
 
     - name: 'TOFU Plan'
       run: |
@@ -54,4 +65,3 @@ jobs:
       run: |
         echo "Applying TOFU changes for environment: ${{ env.TOFU_ENV }}"
         # tofu apply tfplan
-
