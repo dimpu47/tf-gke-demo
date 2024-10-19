@@ -50,7 +50,7 @@ jobs:
     - name: 'TOFU Init with Partial Backend Configuration'
 
       run: |
-        echo "Running TOGU init..."
+        echo "Running TOFU init..."
         tofu init -backend-config="bucket=gauro-${{ env.TOFU_ENV }}-tfstate" \
                   -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}" \
                   -backend-config="credentials=key.json" 
