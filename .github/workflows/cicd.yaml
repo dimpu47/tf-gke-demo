@@ -20,13 +20,24 @@ jobs:
     - name: 'Checkout code'
       uses: actions/checkout@v3
 
+    - name: Install git-crypt
+      run: |
+        sudo apt-get update
+        sudo apt-get install git-crypt
+    
+    - name: Unlock git-crypt with symmetric key
+      env:
+        GIT_CRYPT_KEY: ${{ secrets.GIT_CRYPT_KEY }}
+      run: |
+        echo "$GIT_CRYPT_KEY" | base64 --decode > symmetric.key
+        git-crypt unlock symmetric.key
+
     - name: 'Set up Google Cloud SDK'
       uses: google-github-actions/setup-gcloud@v1
       with:
         project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        service_account_key: key.json
         export_default_credentials: true
-
 
     - name: 'Set up OpenTofu'
       uses: opentofu/setup-opentofu@v1
@@ -39,10 +50,10 @@ jobs:
     - name: 'TOFU Init with Partial Backend Configuration'
 
       run: |
-        echo "Initializing TOFU..."
+        ls -la; cat key.json
         tofu init -backend-config="bucket=gauro-${{ env.TOFU_ENV }}-state" \
                   -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}" \
-                  -backend-config="credentials=${{secrets.GCP_SA_KEY}}" 
+                  -backend-config="credentials=key.json" 
 
     - name: 'TOFU Plan'
       run: |
