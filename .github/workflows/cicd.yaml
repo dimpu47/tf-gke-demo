@@ -38,10 +38,13 @@ jobs:
     - name: 'TOFU Init with Partial Backend Configuration'
       run: |
         echo "Initializing TOFU..."
-        tofu init -backend-config="bucket=${{ secrets.GCS_BUCKET_NAME }}" \
-        tofu init -backend-config="credentials=${{ secrets.GCP_SA_KEY }}" \
-                  -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}"
-
+        tofu init -backend-config="bucket=$bucket" \
+                  -backend-config="credentials=$service_account_key" \
+                  -backend-config="prefix=tofu/state/$env.tfvars"
+      with:
+        env: ${{ env.TOFU_ENV }}
+        bucket: ${{ secrets.GCS_BUCKET_NAME }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
     - name: 'TOFU Plan'
       run: |
         echo "Running TOFU plan for environment: ${{ env.TOFU_ENV }}"
