@@ -20,37 +20,49 @@ create_service_account() {
   echo "Creating service account: $SA_EMAIL"
   gcloud iam service-accounts create "$SA_NAME" \
     --description="Service account for $ENV environment" \
-    --display-name="tofu-$ENV"
+    --display-name="tofu-$ENV" > /dev/null 2>&1
 }
+
+# Function to add IAM policy bindings
+add_policy_binding() {
+  local role=$1
+  echo "Assigning role $role..."
+  gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member="serviceAccount:$SA_EMAIL" \
+    --role="$role" > /dev/null 2>&1
+}
+
+
+# Function to delete older service account keys
+delete_old_keys() {
+  echo "Deleting old service account keys for $SA_EMAIL..."
+  # List the keys for the service account
+  old_keys=$(gcloud iam service-accounts keys list --iam-account="$SA_EMAIL" --format="value(name)")
+  
+  # Delete each key
+  for key in $old_keys; do
+    echo "Deleting key $key"
+    gcloud iam service-accounts keys delete "$key" --iam-account="$SA_EMAIL" --quiet > /dev/null 2>&1
+  done
+}
+
 
 # Check if the user wants to create the service account
 if [[ "$CREATE_SA" == "yes" ]]; then
   create_service_account
 fi
 
-# Assign Compute Admin role
-gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-  --member="serviceAccount:$SA_EMAIL" \
-  --role="roles/compute.admin"
-
-# Assign Kubernetes Engine Admin role
-gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-  --member="serviceAccount:$SA_EMAIL" \
-  --role="roles/container.admin"
-
-# Assign Service Account Token Creator role
-gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-  --member="serviceAccount:$SA_EMAIL" \
-  --role="roles/iam.serviceAccountTokenCreator"
-
-# Assign Storage Admin role
-gcloud projects add-iam-policy-binding "$PROJECT_ID" \
-  --member="serviceAccount:$SA_EMAIL" \
-  --role="roles/storage.admin"
+# Assign roles by calling the function
+add_policy_binding "roles/compute.admin"
+add_policy_binding "roles/container.admin"
+add_policy_binding "roles/iam.serviceAccountTokenCreator"
+add_policy_binding "roles/storage.admin"
+add_policy_binding "roles/iam.serviceAccountAdmin"
 
 echo "Roles assigned successfully to $SA_EMAIL in project $PROJECT_ID."
 
 echo "Fetching key file for $SA_EMAIL"
 gcloud iam service-accounts keys create key.json --iam-account=$SA_EMAIL --key-file-type=json
+delete_old_keys
 
 echo "We're done setting up creds!"
