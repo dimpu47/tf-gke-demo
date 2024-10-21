@@ -7,6 +7,9 @@ read -p "Enter environment name (e.g., sandbox, stage, prod): " ENV
 # Prompt to create service account
 read -p "Do you want to create the service account? (yes/no): " CREATE_SA
 
+# Prompt to key cleanup
+read -p "Do you want to delete old keys of the service account? (yes/no): " CLEANUP
+
 # Variables
 PROJECT_ID=$(gcloud config get-value project)
 PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID \
@@ -65,7 +68,11 @@ add_policy_binding "roles/resourcemanager.projectIamAdmin"
 
 echo "Roles assigned successfully to $SA_EMAIL in project $PROJECT_ID."
 
-delete_old_keys
+# Check if the user wants to remove old keys of the service account
+if [[ "$CLEANUP" == "yes" ]]; then
+  delete_old_keys
+fi
+
 
 # Fetch and create the new key file
 echo "Fetching key file for $SA_EMAIL"
