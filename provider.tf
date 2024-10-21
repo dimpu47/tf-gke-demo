@@ -18,6 +18,7 @@ module "enabled_google_apis" {
     "containerregistry.googleapis.com",
     "container.googleapis.com",
     "compute.googleapis.com",
+    "cloudresourcemanager.googleapis.com",
     # "binaryauthorization.googleapis.com",
     "stackdriver.googleapis.com",
     "cloudkms.googleapis.com",
