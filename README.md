@@ -15,7 +15,7 @@ You should have following tools installed on your system:
 
 ## Usage
 
-### Tofu service account
+### OpenTofu service account
 
 ```bash
 gcloud iam service-accounts create tofu-$ENV
@@ -33,7 +33,28 @@ Ensure it has following permission:
 gcloud projects get-iam-policy $PROJECT_ID \
   --flatten="bindings[].members" \
   --format="table(bindings.role)" \
-  --filter="bindings.members:serviceAccount:$SA_NAME"
+  --filter="bindings.members:serviceAccount:$SA_EMAIL"
+```
+
+```bash
+# Assign roles to a given service account
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SA_EMAIL" \
+  --role="roles/compute.admin"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SA_EMAIL" \
+  --role="roles/container.admin"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SA_EMAIL" \
+  --role="roles/iam.serviceAccountTokenCreator"
+
+gcloud projects add-iam-policy-binding $PROJECT_ID \
+  --member="serviceAccount:$SA_EMAIL" \
+  --role="roles/storage.admin"
+
 ```
 
 
@@ -80,11 +101,11 @@ gcloud kms keys add-iam-policy-binding gke-$ENV-enc-key \
 ENV=sandbox
 BUCKET=gauro-$ENV-tfstate
 PROJECT_ID=$(gcloud config get-value project)
-SA_NAME=tofu@$PROJECT_ID.iam.gserviceaccount.com
+SA_EMAIL=tofu@$PROJECT_ID.iam.gserviceaccount.com
 
 
 # fetch gcp serviceaccount key
-gcloud iam service-accounts keys create key.json --iam-account=$SA_NAME --key-file-type=json
+gcloud iam service-accounts keys create key.json --iam-account=$SA_EMAIL --key-file-type=json
 
 # generate tfvars
 tf-docs tfvars hcl . > $ENV.tfvars
