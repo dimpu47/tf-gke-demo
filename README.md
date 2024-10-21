@@ -1,6 +1,6 @@
 # tf-gke-domo
 
-![tf-gke-demo build](https://github.com/github/docs/actions/workflows/cicd.yml/badge.svg)
+[![TOFU GKE and ArgoCD Deploy](https://github.com/dimpu47/tf-gke-demo/actions/workflows/cicd.yaml/badge.svg)](https://github.com/dimpu47/tf-gke-demo/actions/workflows/cicd.yaml)
 
 This repository provides a demo of using OpenTofu to deploy resources on Google Kubernetes Engine (GKE). The demo highlights key steps and configurations required for setting up a GKE cluster using OpenTofu and managing app effectively using ArgoCD.
 
