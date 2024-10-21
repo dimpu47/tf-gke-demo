@@ -131,7 +131,7 @@ resource "null_resource" "deploy_argo" {
     command = <<EOF
     SA_EMAIL=tofu-$env@$project_id.iam.gserviceaccount.com
     gcloud auth activate-service-account $SA_EMAIL --key-file=./key.json
-
+    gcloud components install kubectl --quiet
     gcloud container clusters list --filter=status:RUNNING  --filter=name:$cluster_name
     gcloud container clusters get-credentials $cluster_name --region $cluster_region
 
