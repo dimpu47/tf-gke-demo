@@ -59,6 +59,7 @@ add_policy_binding "roles/iam.serviceAccountTokenCreator"
 add_policy_binding "roles/storage.admin"
 add_policy_binding "roles/iam.serviceAccountAdmin"
 add_policy_binding "roles/iam.serviceAccountUser"
+add_policy_binding "roles/resourcemanager.projectIamAdmin"
 
 echo "Roles assigned successfully to $SA_EMAIL in project $PROJECT_ID."
 
