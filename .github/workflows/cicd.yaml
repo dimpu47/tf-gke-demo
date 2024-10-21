@@ -64,7 +64,7 @@ jobs:
 
     - name: 'TOFU Apply'
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: key.json
+        GOOGLE_APPLICATION_CREDENTIALS: creds/${{ env.TOFU_ENV }}/key.json
       if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name != 'pull_request'
       run: |
         echo "Applying TOFU changes for environment: ${{ env.TOFU_ENV }}"
