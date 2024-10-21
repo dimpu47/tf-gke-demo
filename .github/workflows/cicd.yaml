@@ -51,13 +51,13 @@ jobs:
 
       run: |
         echo "Running TOFU init..."
-        tofu init -backend-config="bucket=gauro-${{ env.TOFU_ENV }}-tfstate" \
+        tofu init -backend-config="bucket=demo-${{ env.TOFU_ENV }}-tfstate" \
                   -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}" \
-                  -backend-config="credentials=key.json" 
+                  -backend-config="credentials=creds/${{ env.TOFU_ENV }}/key.json" 
 
     - name: 'TOFU Plan'
       env:
-        GOOGLE_APPLICATION_CREDENTIALS: key.json
+        GOOGLE_APPLICATION_CREDENTIALS: creds/${{ env.TOFU_ENV }}/key.json
       run: |
         echo "Running TOFU plan for environment: ${{ env.TOFU_ENV }}"
         tofu plan -var-file="${{ env.TOFU_ENV }}.tfvars" -out=tfplan
@@ -65,7 +65,7 @@ jobs:
     - name: 'TOFU Apply'
       env:
         GOOGLE_APPLICATION_CREDENTIALS: key.json
-      if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' && github.event_name != 'pull_request'
+      if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop') && github.event_name != 'pull_request'
       run: |
         echo "Applying TOFU changes for environment: ${{ env.TOFU_ENV }}"
         tofu apply tfplan

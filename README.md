@@ -64,8 +64,20 @@ To be able to view content of statefile usng `gsutil`
 ```
 ENV=sandbox
 BUCKET=gauro-$ENV-tfstate
+gsutil mb -c nearline -l us-central1 -p $PROJECT_ID gs://$BUCKET
+gsutil set versioning on gs://$BUCKET
 gsutil iam ch user:<your-eamil-id>:objectAdmin gs://$BUCKET
+# for debugging purposes only
 gsutil cat gs://$BUCKET/tofu/state/$ENV/default.tfstate
+```
+
+### enable container service
+
+```bash
+# needed to retrive available cluster versions
+gcloud services enable \
+  container.googleapis.com \
+  serviceusage.googleapis.com
 ```
 
 ### KMS Setup for Database (etcd) Encryption
@@ -116,8 +128,8 @@ sed -i '' "s|sandbox|$ENV|g" $ENV.tfvars
 sed -i '' "s|^project_id         =.*|project_id         = '$PROJECT_ID'|g" $ENV.tfvars
 
 
-tofu init -backend-config="bucket=$BUCKET" -backend-config="prefix=$ENV -backend-config="credentials=key.json"
-tofu workspace select gauro-$ENV
+tofu init -backend-config="bucket=$BUCKET" -backend-config="prefix=tofu/state/$ENV -backend-config="credentials=key.json"
+# tofu workspace select gauro-$ENV (optional)
 tofu plan -var-file $ENV-tfvars -out plan.out
 tofu apply -var-file $ENV-tfvars -out plan.out
 ```
@@ -195,7 +207,7 @@ No requirements.
 | <a name="input_disk_size_gb"></a> [disk\_size\_gb](#input\_disk\_size\_gb) | n/a | `number` | `100` | no |
 | <a name="input_env"></a> [env](#input\_env) | n/a | `string` | `"sandbox"` | no |
 | <a name="input_gcp_sa_name"></a> [gcp\_sa\_name](#input\_gcp\_sa\_name) | n/a | `string` | `"gke-nodes"` | no |
-| <a name="input_gke_cluster_name"></a> [gke\_cluster\_name](#input\_gke\_cluster\_name) | n/a | `string` | `"gauro-gke"` | no |
+| <a name="input_gke_cluster_name"></a> [gke\_cluster\_name](#input\_gke\_cluster\_name) | n/a | `string` | `"demo-gke"` | no |
 | <a name="input_gke_enc_key"></a> [gke\_enc\_key](#input\_gke\_enc\_key) | n/a | `string` | `"gke-sandbox-enc-key"` | no |
 | <a name="input_gke_key_ring"></a> [gke\_key\_ring](#input\_gke\_key\_ring) | n/a | `string` | `"gke-sandbox-ring"` | no |
 | <a name="input_gke_master_cidr"></a> [gke\_master\_cidr](#input\_gke\_master\_cidr) | IP Range for GKE Master Nodes | `string` | `"192.168.15.224/28"` | no |
@@ -206,11 +218,11 @@ No requirements.
 | <a name="input_machine_type_ai"></a> [machine\_type\_ai](#input\_machine\_type\_ai) | VM machine type for GKE nodes | `string` | `"a2-highgpu-1g"` | no |
 | <a name="input_max_count"></a> [max\_count](#input\_max\_count) | n/a | `string` | `"10"` | no |
 | <a name="input_min_count"></a> [min\_count](#input\_min\_count) | n/a | `string` | `"1"` | no |
-| <a name="input_network_name"></a> [network\_name](#input\_network\_name) | VPC Network Name | `string` | `"gauro-demo-nw"` | no |
+| <a name="input_network_name"></a> [network\_name](#input\_network\_name) | VPC Network Name | `string` | `"demo-demo-nw"` | no |
 | <a name="input_project_id"></a> [project\_id](#input\_project\_id) | Id of the project all resources go under | `string` | `"your-project-id"` | no |
 | <a name="input_region"></a> [region](#input\_region) | GCP region for the resources | `string` | `"us-central1"` | no |
 | <a name="input_secondary_ranges"></a> [secondary\_ranges](#input\_secondary\_ranges) | k8s POD and SVC IP Ranges | `any` | <pre>{<br>  "kube": [<br>    {<br>      "ip_cidr_range": "10.0.0.0/18",<br>      "range_name": "kube-pods"<br>    },<br>    {<br>      "ip_cidr_range": "10.40.0.0/24",<br>      "range_name": "kube-svcs"<br>    }<br>  ]<br>}</pre> | no |
-| <a name="input_subnets"></a> [subnets](#input\_subnets) | VPC subnets for GKE cluster | `any` | <pre>[<br>  {<br>    "subnet_ip": "10.10.0.0/24",<br>    "subnet_name": "infra-gauro-sandbox",<br>    "subnet_private_access": "true",<br>    "subnet_region": "us-central1"<br>  },<br>  {<br>    "subnet_ip": "10.20.0.0/24",<br>    "subnet_name": "kube",<br>    "subnet_private_access": "true",<br>    "subnet_region": "us-central1"<br>  }<br>]</pre> | no |
+| <a name="input_subnets"></a> [subnets](#input\_subnets) | VPC subnets for GKE cluster | `any` | <pre>[<br>  {<br>    "subnet_ip": "10.10.0.0/24",<br>    "subnet_name": "infra-demo-sandbox",<br>    "subnet_private_access": "true",<br>    "subnet_region": "us-central1"<br>  },<br>  {<br>    "subnet_ip": "10.20.0.0/24",<br>    "subnet_name": "kube",<br>    "subnet_private_access": "true",<br>    "subnet_region": "us-central1"<br>  }<br>]</pre> | no |
 | <a name="input_zones"></a> [zones](#input\_zones) | GCP zones for the resources | `list(string)` | <pre>[<br>  "us-central1-a",<br>  "us-central1-b",<br>  "us-central1-c"<br>]</pre> | no |
 
 ## Outputs

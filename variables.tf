@@ -16,7 +16,7 @@ variable "zones" {
 }
 
 variable "gke_cluster_name" {
-  default = "gauro-gke"
+  default = "demo-gke"
 }
 
 variable "env" {
@@ -25,7 +25,7 @@ variable "env" {
 
 variable "network_name" {
   type        = string
-  default     = "gauro-demo-nw"
+  default     = "demo-demo-nw"
   description = "VPC Network Name"
 }
 
@@ -33,7 +33,7 @@ variable "subnets" {
   type = any
   default = [
     {
-      subnet_name           = "infra-gauro-sandbox"
+      subnet_name           = "infra-demo-sandbox"
       subnet_ip             = "10.10.0.0/24"
       subnet_region         = "us-central1"
       subnet_private_access = "true"
