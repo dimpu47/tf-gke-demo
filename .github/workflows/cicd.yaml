@@ -51,7 +51,7 @@ jobs:
 
       run: |
         echo "Running TOFU init..."
-        tofu init -backend-config="bucket=demo-${{ env.TOFU_ENV }}-tfstate" \
+        tofu init -backend-config="bucket=${{ secrets.GCS_BUCKET_NAME }}" \
                   -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}" \
                   -backend-config="credentials=creds/${{ env.TOFU_ENV }}/key.json" 
 
