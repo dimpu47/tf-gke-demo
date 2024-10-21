@@ -140,8 +140,6 @@ graph TD;
 
 ```
 
-
-
 ## Requirements
 
 No requirements.
@@ -151,7 +149,6 @@ No requirements.
 | Name | Version |
 |------|---------|
 | <a name="provider_google"></a> [google](#provider\_google) | 6.7.0 |
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.16.1 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.2.3 |
 
 ## Modules
@@ -170,19 +167,19 @@ No requirements.
 | [google_compute_router_nat.main](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_router_nat) | resource |
 | [google_project_iam_member.gke_nodes](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_service_account.gke_nodes](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/service_account) | resource |
-| [helm_release.argocd](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
-| [null_resource.configure_kubectl](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.deploy_argo](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [google_client_config.default](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/client_config) | data source |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_argo_ha"></a> [argo\_ha](#input\_argo\_ha) | whether to deploy argo in ha mode or not | `bool` | `false` | no |
 | <a name="input_auto_repair"></a> [auto\_repair](#input\_auto\_repair) | n/a | `bool` | `true` | no |
 | <a name="input_auto_upgrade"></a> [auto\_upgrade](#input\_auto\_upgrade) | n/a | `bool` | `true` | no |
 | <a name="input_autoscaling"></a> [autoscaling](#input\_autoscaling) | n/a | `bool` | `true` | no |
 | <a name="input_disk_size_gb"></a> [disk\_size\_gb](#input\_disk\_size\_gb) | n/a | `number` | `100` | no |
-| <a name="input_env"></a> [env](#input\_env) | n/a | `string` | `"staging"` | no |
+| <a name="input_env"></a> [env](#input\_env) | n/a | `string` | `"sandbox"` | no |
 | <a name="input_gcp_sa_name"></a> [gcp\_sa\_name](#input\_gcp\_sa\_name) | n/a | `string` | `"gke-nodes"` | no |
 | <a name="input_gke_cluster_name"></a> [gke\_cluster\_name](#input\_gke\_cluster\_name) | n/a | `string` | `"gauro-gke"` | no |
 | <a name="input_gke_enc_key"></a> [gke\_enc\_key](#input\_gke\_enc\_key) | n/a | `string` | `"gke-sandbox-enc-key"` | no |
@@ -192,7 +189,7 @@ No requirements.
 | <a name="input_initial_node_count"></a> [initial\_node\_count](#input\_initial\_node\_count) | n/a | `string` | `"1"` | no |
 | <a name="input_k8s_version"></a> [k8s\_version](#input\_k8s\_version) | GKE version | `string` | `"1.19.9-gke.1900"` | no |
 | <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | VM machine type for GKE nodes | `string` | `"e2-standard-2"` | no |
-| <a name="input_machine_type_ai"></a> [machine\_type\_ai](#input\_machine\_type\_ai) | VM machine type for GKE nodes | `string` | `"e2-standard-2"` | no |
+| <a name="input_machine_type_ai"></a> [machine\_type\_ai](#input\_machine\_type\_ai) | VM machine type for GKE nodes | `string` | `"a2-highgpu-1g"` | no |
 | <a name="input_max_count"></a> [max\_count](#input\_max\_count) | n/a | `string` | `"10"` | no |
 | <a name="input_min_count"></a> [min\_count](#input\_min\_count) | n/a | `string` | `"1"` | no |
 | <a name="input_network_name"></a> [network\_name](#input\_network\_name) | VPC Network Name | `string` | `"gauro-demo-nw"` | no |
