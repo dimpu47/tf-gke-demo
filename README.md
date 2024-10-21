@@ -75,7 +75,9 @@ gsutil cat gs://$BUCKET/tofu/state/$ENV/default.tfstate
 
 ```bash
 # needed to retrive available cluster versions
-gcloud services enable container.googleapis.com
+gcloud services enable \
+  container.googleapis.com \
+  serviceusage.googleapis.com
 ```
 
 ### KMS Setup for Database (etcd) Encryption
