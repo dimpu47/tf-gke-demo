@@ -129,6 +129,8 @@ resource "null_resource" "deploy_argo" {
 
   provisioner "local-exec" {
     command = <<EOF
+    SA_EMAIL=tofu-$env@$project_id.iam.gserviceaccount.com
+    gcloud auth activate-service-account $SA_EMAIL --key-file=./key.json
     gcloud components install kubectl --quiet
     gcloud container clusters list --filter=status:RUNNING  --filter=name:$cluster_name
     gcloud container clusters get-credentials $cluster_name --region $cluster_region
@@ -140,6 +142,8 @@ resource "null_resource" "deploy_argo" {
     environment = {
       cluster_name   = "${var.gke_cluster_name}-${terraform.workspace}"
       cluster_region = "${var.region}"
+      project_id     = "${var.project_id}"
+      env            = "${var.env}"
       ha             = "${var.argo_ha}"
     }
   }
