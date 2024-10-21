@@ -1,0 +1,2 @@
+*.tfvars* filter=git-crypt diff=git-crypt
+key.json filter=git-crypt diff=git-crypt
