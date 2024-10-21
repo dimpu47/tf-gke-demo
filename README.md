@@ -1,6 +1,6 @@
 # tf-gke-domo
 
-This repository provides a demo of using Terraform to deploy resources on Google Kubernetes Engine (GKE). The demo highlights key steps and configurations required for setting up a GKE cluster using Terraform and managing it effectively.
+This repository provides a demo of using OpenTofu to deploy resources on Google Kubernetes Engine (GKE). The demo highlights key steps and configurations required for setting up a GKE cluster using Terraform and managing it effectively.
 
 ## Prerequisites
 
@@ -11,9 +11,31 @@ You should have following tools installed on your system:
 - gsutil CLI: [installation guide](https://cloud.google.com/storage/docs/gsutil_install)
 - kubectl: [installation guide](https://kubernetes.io/docs/tasks/tools/)
 - argo CLI: [installation guide](https://argo-cd.readthedocs.io/en/stable/cli_installation)
-- terraform-dcs: [installation guide](https://github.com/terraform-docs/terraform-docs?tab=readme-ov-file#installation) (optional)
+- terraform-docs: [installation guide](https://github.com/terraform-docs/OpenTofu-docs?tab=readme-ov-file#installation) (optional)
 
 ## Usage
+
+### Tofu service account
+
+```bash
+gcloud iam service-accounts create tofu-$ENV
+```
+
+Ensure it has following permission:
+
+- Compute Admin
+- Kubernetes Engine Admin
+- Service Account Token Creator
+- Storage Admin 
+
+```bash title="to check iam role assigned to"
+# Check roles currently assigned to a given
+gcloud projects get-iam-policy $PROJECT_ID \
+  --flatten="bindings[].members" \
+  --format="table(bindings.role)" \
+  --filter="bindings.members:serviceAccount:$SA_NAME"
+```
+
 
 ### Access to remote state bucket
 To be able to view content of statefile usng `gsutil`
@@ -30,13 +52,13 @@ You need to do following steps prior to proviosning GKE cluster using the config
 
 > FYR: [application layer secrets](https://cloud.google.com/kubernetes-engine/docs/how-to/encrypting-secrets#gcloud_1)
 
-```
+```bash
 gcloud kms keyrings create gke-$ENV-ring \                                                   
     --location us-central1 \
     --project $(gcloud config get-value project)
 ```
 
-```
+```bash
 gcloud kms keys create gke-$ENV-enc-key \                                                
     --location us-central1 \
     --keyring gke-$ENV-ring \                   
@@ -44,7 +66,7 @@ gcloud kms keys create gke-$ENV-enc-key \
     --project $(gcloud config get-value project)
 ```
 
-```
+```bash
 gcloud kms keys add-iam-policy-binding gke-$ENV-enc-key \                                
   --location us-central1 \  
   --keyring gke-$ENV-ring \                   
@@ -54,17 +76,19 @@ gcloud kms keys add-iam-policy-binding gke-$ENV-enc-key \
 ```
 
 ### Init, Plan & Apply
-```
+```bash
 ENV=sandbox
 BUCKET=gauro-$ENV-tfstate
 PROJECT_ID=$(gcloud config get-value project)
 SA_NAME=tofu@$PROJECT_ID.iam.gserviceaccount.com
+
 
 # fetch gcp serviceaccount key
 gcloud iam service-accounts keys create key.json --iam-account=$SA_NAME --key-file-type=json
 
 # generate tfvars
 tf-docs tfvars hcl . > $ENV.tfvars
+sed -i "s|^project_id         =.*|project_id         = '$PROJECT_ID'|g" $ENV.tfvars
 
 
 tofu init -backend-config="bucket=$BUCKET" -backend-config="prefix=$ENV -backend-config="credentials=key.json"
@@ -79,14 +103,14 @@ tofu apply -var-file $ENV-tfvars -out plan.out
 
 ```mermaid
 graph TD;
-    A[GitHub Actions - Terraform Repo] -->|Provisions GKE| B[Private GKE Cluster];
+    A[GitHub Actions - OpenTofu Repo] -->|Provisions GKE| B[Private GKE Cluster];
     A -->|Deploys ArgoCD| C[ArgoCD on GKE];
     D[Microservice Repo Backend & Frontend] -->|Build & Push Docker Images| E[Docke Registry/GCR];
     D -->|Update manifests| F[K8s Config Repo];
     F -->|Manifests Update| C;
     C -->|Syncs with GKE| B;
     
-    subgraph Terraform Repo
+    subgraph OpenTofu Repo
         A
     end
     
