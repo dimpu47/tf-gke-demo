@@ -50,7 +50,6 @@ jobs:
     - name: 'TOFU Init with Partial Backend Configuration'
 
       run: |
-        sed -i 's|^project_id         =.*|project_id         = \"${{ secrets.GCP_PROJECT_ID }}\"|g' ${{ env.TOFU_ENV }}.tfvars
         echo "Running TOFU init..."
         tofu init -backend-config="bucket=gauro-${{ env.TOFU_ENV }}-tfstate" \
                   -backend-config="prefix=tofu/state/${{ env.TOFU_ENV }}" \
