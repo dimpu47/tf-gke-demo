@@ -133,7 +133,6 @@ resource "null_resource" "deploy_argo" {
     gcloud container clusters get-credentials $cluster_name --region $cluster_region
 
     kubectl create namespace argocd
-    if ha=
     kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/v2.12.6/manifests/$(if [ "$ha" = true ]; then echo "ha/install.yaml"; else echo "install.yaml"; fi)
     EOF
 

@@ -2,6 +2,8 @@
 
 This repository provides a demo of using OpenTofu to deploy resources on Google Kubernetes Engine (GKE). The demo highlights key steps and configurations required for setting up a GKE cluster using Terraform and managing it effectively.
 
+> CAUTION:  This repository uses [git-crypt](https://www.agwa.name/projects/git-crypt/) to store sensitive information. Please reach out if you need access to decrypt secrets in this repo.
+
 ## Prerequisites
 
 You should have following tools installed on your system: 
@@ -11,6 +13,7 @@ You should have following tools installed on your system:
 - gsutil CLI: [installation guide](https://cloud.google.com/storage/docs/gsutil_install)
 - kubectl: [installation guide](https://kubernetes.io/docs/tasks/tools/)
 - argo CLI: [installation guide](https://argo-cd.readthedocs.io/en/stable/cli_installation)
+- git-crypt CLI: [installation guide](https://github.com/AGWA/git-crypt/blob/master/INSTALL.md)
 - terraform-docs: [installation guide](https://github.com/terraform-docs/OpenTofu-docs?tab=readme-ov-file#installation) (optional)
 
 ## Usage
@@ -18,7 +21,11 @@ You should have following tools installed on your system:
 ### OpenTofu service account
 
 ```bash
-gcloud iam service-accounts create tofu-$ENV
+ENV=sandbox
+SA_NAME=tofu-$ENV
+SA_EMAIL=$SA_NAME@$PROJECT_ID.iam.gserviceaccount.com
+PROJECT_ID=$(gcloud config get-value project)
+chmod +x ./setup-sa.sh && ./setup-sa.sh
 ```
 
 Ensure it has following permission:
@@ -28,32 +35,13 @@ Ensure it has following permission:
 - Service Account Token Creator
 - Storage Admin 
 
+
 ```bash title="to check iam role assigned to"
-# Check roles currently assigned to a given
+# Check roles currently assigned to a given service account
 gcloud projects get-iam-policy $PROJECT_ID \
   --flatten="bindings[].members" \
   --format="table(bindings.role)" \
   --filter="bindings.members:serviceAccount:$SA_EMAIL"
-```
-
-```bash
-# Assign roles to a given service account
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$SA_EMAIL" \
-  --role="roles/compute.admin"
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$SA_EMAIL" \
-  --role="roles/container.admin"
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$SA_EMAIL" \
-  --role="roles/iam.serviceAccountTokenCreator"
-
-gcloud projects add-iam-policy-binding $PROJECT_ID \
-  --member="serviceAccount:$SA_EMAIL" \
-  --role="roles/storage.admin"
 
 ```
 
@@ -88,10 +76,12 @@ gcloud kms keys create gke-$ENV-enc-key \
 ```
 
 ```bash
+PROJECT_NUMBER=$(gcloud projects describe $PROJECT_ID \
+    --format="value(projectNumber)")
 gcloud kms keys add-iam-policy-binding gke-$ENV-enc-key \                                
   --location us-central1 \  
   --keyring gke-$ENV-ring \                   
-  --member serviceAccount:service-708112334541@container-engine-robot.iam.gserviceaccount.com \
+  --member serviceAccount:service-$PROJECT_NUMBER@container-engine-robot.iam.gserviceaccount.com \
   --role roles/cloudkms.cryptoKeyEncrypterDecrypter \
   --project $(gcloud config get-value project)
 ```
