@@ -76,6 +76,6 @@ fi
 
 # Fetch and create the new key file
 echo "Fetching key file for $SA_EMAIL"
-gcloud iam service-accounts keys create key.json --iam-account="$SA_EMAIL" --key-file-type=json
+gcloud iam service-accounts keys create creds/$ENV/key.json --iam-account="$SA_EMAIL" --key-file-type=json
 
 echo "We're done setting up creds!"
