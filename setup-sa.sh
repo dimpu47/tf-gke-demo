@@ -62,8 +62,8 @@ add_policy_binding "roles/iam.serviceAccountUser"
 
 echo "Roles assigned successfully to $SA_EMAIL in project $PROJECT_ID."
 
+delete_old_keys
 echo "Fetching key file for $SA_EMAIL"
 gcloud iam service-accounts keys create key.json --iam-account=$SA_EMAIL --key-file-type=json
-delete_old_keys
 
 echo "We're done setting up creds!"
