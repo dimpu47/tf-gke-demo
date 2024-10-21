@@ -129,6 +129,7 @@ resource "null_resource" "deploy_argo" {
 
   provisioner "local-exec" {
     command = <<EOF
+    gcloud components install kubectl --quiet
     gcloud container clusters list --filter=status:RUNNING  --filter=name:$cluster_name
     gcloud container clusters get-credentials $cluster_name --region $cluster_region
 
