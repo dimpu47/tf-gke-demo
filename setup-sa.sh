@@ -2,7 +2,7 @@
 set -e
 
 # Prompt for environment input
-read -p "Enter environment name (e.g., sandbox, prod): " ENV
+read -p "Enter environment name (e.g., sandbox, stage, prod): " ENV
 
 # Prompt to create service account
 read -p "Do you want to create the service account? (yes/no): " CREATE_SA

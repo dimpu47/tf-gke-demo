@@ -99,9 +99,8 @@ gcloud iam service-accounts keys create key.json --iam-account=$SA_EMAIL --key-f
 
 # generate tfvars
 tf-docs tfvars hcl . > $ENV.tfvars
-sed -i "s|^project_id         =.*|project_id         = '$PROJECT_ID'|g" $ENV.tfvars
-sed -i "s|^gke_enc_key         =.*|gke_enc_key         = 'gke-$ENV-enc-key'|g" $ENV.tfvars
-sed -i "s|^gke_key_ring         =.*|gke_key_ring         = 'gke-$ENV-ring'|g" $ENV.tfvars
+sed -i '' "s|sandbox|$ENV|g" $ENV.tfvars
+sed -i '' "s|^project_id         =.*|project_id         = '$PROJECT_ID'|g" $ENV.tfvars
 
 
 tofu init -backend-config="bucket=$BUCKET" -backend-config="prefix=$ENV -backend-config="credentials=key.json"
