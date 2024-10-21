@@ -1,8 +1,19 @@
 # tf-gke-domo
 
-This repository provides a demo of using OpenTofu to deploy resources on Google Kubernetes Engine (GKE). The demo highlights key steps and configurations required for setting up a GKE cluster using Terraform and managing it effectively.
+This repository provides a demo of using OpenTofu to deploy resources on Google Kubernetes Engine (GKE). The demo highlights key steps and configurations required for setting up a GKE cluster using OpenTofu and managing app effectively using ArgoCD.
 
-> CAUTION:  This repository uses [git-crypt](https://www.agwa.name/projects/git-crypt/) to store sensitive information. Please reach out if you need access to decrypt secrets in this repo.
+> CAUTION:  This repository uses [git-crypt](https://www.agwa.name/projects/git-crypt/) to store sensitive information. 
+  Please reach out if you need access to decrypt secrets in this repo. 
+  Run `git-crypt status` to check which files are encrypted before
+
+#### Unlock repository
+
+```bash
+# unlock repo to decrypt sensitive info
+git-crypt unlock
+# to check which files are encrypted.
+git-crypt status
+```
 
 ## Prerequisites
 
