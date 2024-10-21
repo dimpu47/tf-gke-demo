@@ -28,7 +28,7 @@ PROJECT_ID=$(gcloud config get-value project)
 chmod +x ./setup-sa.sh && ./setup-sa.sh
 ```
 
-Ensure it has following permission:
+Ensure it has following roles:
 
 - Compute Admin
 - Kubernetes Engine Admin
@@ -36,7 +36,7 @@ Ensure it has following permission:
 - Storage Admin 
 
 
-```bash title="to check iam role assigned to"
+```bash
 # Check roles currently assigned to a given service account
 gcloud projects get-iam-policy $PROJECT_ID \
   --flatten="bindings[].members" \
@@ -94,7 +94,7 @@ PROJECT_ID=$(gcloud config get-value project)
 SA_EMAIL=tofu@$PROJECT_ID.iam.gserviceaccount.com
 
 
-# fetch gcp serviceaccount key
+# fetch gcp serviceaccount key (optional)
 gcloud iam service-accounts keys create key.json --iam-account=$SA_EMAIL --key-file-type=json
 
 # generate tfvars
