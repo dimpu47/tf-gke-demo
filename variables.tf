@@ -1,7 +1,7 @@
 variable "project_id" {
   type        = string
   description = "Id of the project all resources go under"
-  default     = "fluid-stratum-296023"
+  default     = "your-project-id"
 }
 
 variable "region" {
