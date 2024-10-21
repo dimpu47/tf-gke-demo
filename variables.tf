@@ -74,7 +74,7 @@ variable "machine_type" {
 }
 variable "machine_type_ai" {
   type        = string
-  default     = "e2-standard-2"
+  default     = "a2-highgpu-1g"
   description = "VM machine type for GKE nodes"
 }
 
