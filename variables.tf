@@ -80,7 +80,7 @@ variable "machine_type_ai" {
 
 variable "k8s_version" {
   type        = string
-  default     = "1.19.9-gke.1900"
+  default     = "1.30.5-gke.1014001"
   description = "GKE version"
 }
 

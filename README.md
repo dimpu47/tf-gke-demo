@@ -188,13 +188,13 @@ No requirements.
 | <a name="input_gke_master_cidr"></a> [gke\_master\_cidr](#input\_gke\_master\_cidr) | IP Range for GKE Master Nodes | `string` | `"192.168.15.224/28"` | no |
 | <a name="input_gke_nodes_sa_roles"></a> [gke\_nodes\_sa\_roles](#input\_gke\_nodes\_sa\_roles) | n/a | `set(string)` | <pre>[<br>  "roles/monitoring.viewer",<br>  "roles/monitoring.metricWriter",<br>  "roles/logging.logWriter",<br>  "roles/stackdriver.resourceMetadata.writer"<br>]</pre> | no |
 | <a name="input_initial_node_count"></a> [initial\_node\_count](#input\_initial\_node\_count) | n/a | `string` | `"1"` | no |
-| <a name="input_k8s_version"></a> [k8s\_version](#input\_k8s\_version) | GKE version | `string` | `"1.19.9-gke.1900"` | no |
+| <a name="input_k8s_version"></a> [k8s\_version](#input\_k8s\_version) | GKE version | `string` | `"1.30.5-gke.1014001"` | no |
 | <a name="input_machine_type"></a> [machine\_type](#input\_machine\_type) | VM machine type for GKE nodes | `string` | `"e2-standard-2"` | no |
 | <a name="input_machine_type_ai"></a> [machine\_type\_ai](#input\_machine\_type\_ai) | VM machine type for GKE nodes | `string` | `"a2-highgpu-1g"` | no |
 | <a name="input_max_count"></a> [max\_count](#input\_max\_count) | n/a | `string` | `"10"` | no |
 | <a name="input_min_count"></a> [min\_count](#input\_min\_count) | n/a | `string` | `"1"` | no |
 | <a name="input_network_name"></a> [network\_name](#input\_network\_name) | VPC Network Name | `string` | `"gauro-demo-nw"` | no |
-| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | Id of the project all resources go under | `string` | `"fluid-stratum-296023"` | no |
+| <a name="input_project_id"></a> [project\_id](#input\_project\_id) | Id of the project all resources go under | `string` | `"your-project-id"` | no |
 | <a name="input_region"></a> [region](#input\_region) | GCP region for the resources | `string` | `"us-central1"` | no |
 | <a name="input_secondary_ranges"></a> [secondary\_ranges](#input\_secondary\_ranges) | k8s POD and SVC IP Ranges | `any` | <pre>{<br>  "kube": [<br>    {<br>      "ip_cidr_range": "10.0.0.0/18",<br>      "range_name": "kube-pods"<br>    },<br>    {<br>      "ip_cidr_range": "10.40.0.0/24",<br>      "range_name": "kube-svcs"<br>    }<br>  ]<br>}</pre> | no |
 | <a name="input_subnets"></a> [subnets](#input\_subnets) | VPC subnets for GKE cluster | `any` | <pre>[<br>  {<br>    "subnet_ip": "10.10.0.0/24",<br>    "subnet_name": "infra-gauro-sandbox",<br>    "subnet_private_access": "true",<br>    "subnet_region": "us-central1"<br>  },<br>  {<br>    "subnet_ip": "10.20.0.0/24",<br>    "subnet_name": "kube",<br>    "subnet_private_access": "true",<br>    "subnet_region": "us-central1"<br>  }<br>]</pre> | no |
